@@ -8,7 +8,7 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Palette: Slate & Physical Hardware */
-  --bg-desk: #212429;
+  --bg-desk: #1e2126;
   --panel-top: #3c414b;
   --panel-bottom: #2b2e36;
   --panel-border: #1a1c21;
@@ -34,7 +34,6 @@
   --text-primary: #edf2f7;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --text-etched: rgba(255, 255, 255, 0.15);
 
   /* Skeuomorphic Lighting Physics (Directional: 90° Overhead Light) */
   --specular-top-sharp: inset 0 1px 0 rgba(255, 255, 255, 0.38);
@@ -62,7 +61,6 @@
     inset 0 1px 1px rgba(0, 0, 0, 0.8),
     0 1px 0 rgba(255, 255, 255, 0.06);
 
-  /* Motion */
   --tactile-spring: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -80,18 +78,86 @@ body {
   background-color: var(--bg-desk);
   background-image: 
     radial-gradient(ellipse at 50% 0%, #353a43 0%, transparent 75%),
-    radial-gradient(circle at 50% 100%, #16181c 0%, transparent 80%),
-    linear-gradient(45deg, rgba(0,0,0,0.04) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(0,0,0,0.04) 25%, transparent 25%);
+    radial-gradient(circle at 50% 100%, #14161a 0%, transparent 80%),
+    linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0,0,0,0.05) 25%, transparent 25%);
   background-size: 100% 100%, 100% 100%, 4px 4px, 4px 4px;
   color: var(--text-primary);
   min-height: 100vh;
   line-height: 1.5;
+  padding: 30px 16px;
   -webkit-font-smoothing: antialiased;
 }
 
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
 /* --------------------------------------------------------------------------
-   3. SKEUOMORPHIC PANELS & CHASSIS
+   3. NAVIGATION BAR (RACK MOUNT STYLE)
+   -------------------------------------------------------------------------- */
+.skeuo-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #373b44 0%, #252830 100%);
+  border: 1px solid #16181c;
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin-bottom: 24px;
+  box-shadow: 
+    var(--specular-top-sharp),
+    var(--bevel-bottom-shadow),
+    var(--shadow-raised-sm);
+}
+
+.nav-brand {
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  color: #f8fafc;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text-secondary);
+  background: linear-gradient(180deg, #32363f 0%, #23262d 100%);
+  border: 1px solid #181a1e;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    var(--shadow-raised-sm);
+  transition: all 0.1s ease;
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.nav-link.active {
+  color: #38bdf8;
+  background: linear-gradient(180deg, #1b1e24 0%, #262a33 100%);
+  box-shadow: 
+    inset 0 2px 4px rgba(0,0,0,0.7),
+    0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* --------------------------------------------------------------------------
+   4. SKEUOMORPHIC PANELS & CHASSIS
    -------------------------------------------------------------------------- */
 .skeuo-panel {
   background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
@@ -102,22 +168,21 @@ body {
     var(--bevel-bottom-shadow),
     var(--shadow-raised-md);
   padding: 28px;
+  margin-bottom: 24px;
   position: relative;
 }
 
-.skeuo-chassis {
-  background: linear-gradient(180deg, var(--chassis-top) 0%, var(--chassis-mid) 40%, var(--chassis-bottom) 100%);
-  border: 1px solid #1a1c20;
-  border-radius: 16px;
-  box-shadow: 
-    var(--specular-top-sharp),
-    var(--bevel-bottom-shadow),
-    0 10px 30px rgba(0, 0, 0, 0.65),
-    0 2px 4px rgba(0, 0, 0, 0.4);
-  padding: 32px;
+.chassis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1a1c21;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
 }
 
-/* Screw Accents for Industrial Feel */
+/* Industrial Corner Screws */
 .skeuo-screw {
   width: 12px;
   height: 12px;
@@ -143,7 +208,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   4. INSET WELLS, DISPLAYS & TERMINALS
+   5. INSET WELLS, TERMINALS & VU METER
    -------------------------------------------------------------------------- */
 .skeuo-well {
   background: var(--screen-bg);
@@ -161,15 +226,16 @@ body {
     inset 0 4px 8px rgba(0, 0, 0, 0.9),
     inset 0 1px 2px rgba(0, 0, 0, 0.8),
     0 1px 0 rgba(255, 255, 255, 0.08);
-  font-family: "SF Mono", Monaco, Consolas, "Courier New", monospace;
+  font-family: "SF Mono", Monaco, Consolas, monospace;
   color: #38bdf8;
   text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
-  padding: 16px 20px;
+  padding: 16px;
   position: relative;
   overflow: hidden;
+  height: 140px;
+  overflow-y: auto;
 }
 
-/* Subtle CRT Scanline overlay */
 .skeuo-display-screen::before {
   content: " ";
   display: block;
@@ -181,8 +247,62 @@ body {
   opacity: 0.6;
 }
 
+/* Analog VU Meter */
+.vu-meter-casing {
+  width: 100%;
+  height: 120px;
+  background: #f4ecd8;
+  border: 2px solid #202227;
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 3px 8px rgba(0,0,0,0.6),
+    inset 0 0 16px rgba(180, 160, 120, 0.4),
+    0 1px 0 rgba(255,255,255,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.vu-scale {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #332d25;
+  font-family: monospace;
+}
+
+.vu-needle {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  width: 2px;
+  height: 130px;
+  background: #dc2626;
+  transform-origin: bottom center;
+  transform: rotate(-35deg);
+  transition: transform 0.1s linear;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.vu-pivot {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  background: #2b2e36;
+  border-radius: 50%;
+  border: 2px solid #14161a;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
 /* --------------------------------------------------------------------------
-   5. TACTILE PUSH BUTTONS
+   6. TACTILE PUSH BUTTONS
    -------------------------------------------------------------------------- */
 .skeuo-btn {
   display: inline-flex;
@@ -213,9 +333,7 @@ body {
   color: #ffffff;
 }
 
-/* Depressed tactile physical state */
-.skeuo-btn:active,
-.skeuo-btn.is-active {
+.skeuo-btn:active {
   transform: translateY(2px);
   background: linear-gradient(180deg, #24272e 0%, #2f343d 100%);
   box-shadow: 
@@ -225,7 +343,6 @@ body {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
-/* Accent Buttons */
 .skeuo-btn-primary {
   background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
   border-color: #172554;
@@ -234,12 +351,6 @@ body {
     inset 0 -1px 0 rgba(0, 0, 0, 0.4),
     0 4px 10px rgba(37, 99, 235, 0.35),
     var(--shadow-raised-sm);
-}
-.skeuo-btn-primary:hover {
-  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
-}
-.skeuo-btn-primary:active {
-  background: linear-gradient(180deg, #172554 0%, #1e3a8a 100%);
 }
 
 .skeuo-btn-gold {
@@ -255,7 +366,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   6. PHYSICAL INPUT FIELDS
+   7. INPUTS & FORM CONTROLS
    -------------------------------------------------------------------------- */
 .skeuo-input {
   width: 100%;
@@ -268,7 +379,6 @@ body {
   font-size: 0.95rem;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .skeuo-input:focus {
@@ -279,18 +389,14 @@ body {
     0 0 12px rgba(59, 130, 246, 0.25);
 }
 
-.skeuo-input::placeholder {
-  color: var(--text-muted);
-}
-
 /* --------------------------------------------------------------------------
-   7. ROCKER & TOGGLE SWITCHES
+   8. TOGGLE SWITCH & LED
    -------------------------------------------------------------------------- */
 .skeuo-toggle {
   position: relative;
   display: inline-block;
-  width: 64px;
-  height: 32px;
+  width: 60px;
+  height: 30px;
   cursor: pointer;
 }
 
@@ -304,7 +410,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: #17191d;
-  border-radius: 16px;
+  border-radius: 15px;
   border: 1px solid #0f1013;
   box-shadow: var(--shadow-sunken-well);
   transition: all 0.2s var(--tactile-spring);
@@ -312,9 +418,8 @@ body {
 
 .skeuo-toggle-knob {
   position: absolute;
-  content: "";
-  height: 24px;
-  width: 24px;
+  height: 22px;
+  width: 22px;
   left: 4px;
   bottom: 3px;
   background: linear-gradient(180deg, #f1f5f9 0%, #94a3b8 100%);
@@ -328,11 +433,11 @@ body {
 }
 
 .skeuo-toggle input:checked + .skeuo-toggle-track {
-  background: #1a2333;
+  background: #172433;
 }
 
 .skeuo-toggle input:checked + .skeuo-toggle-track .skeuo-toggle-knob {
-  transform: translateX(32px);
+  transform: translateX(30px);
   background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
   border-color: #1d4ed8;
   box-shadow: 
@@ -341,9 +446,6 @@ body {
     0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-/* --------------------------------------------------------------------------
-   8. LED INDICATOR LAMPS
-   -------------------------------------------------------------------------- */
 .skeuo-led {
   width: 12px;
   height: 12px;
@@ -354,7 +456,6 @@ body {
     inset 0 1px 1px rgba(0, 0, 0, 0.8),
     0 1px 0 rgba(255, 255, 255, 0.1);
   display: inline-block;
-  position: relative;
 }
 
 .skeuo-led.is-active-green {
@@ -376,27 +477,11 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   9. PHYSICAL EMBOSSED & ENGRAVED TYPOGRAPHY
-   -------------------------------------------------------------------------- */
-/* Sunken / Debossed text stamped into metal */
-.skeuo-text-engraved {
-  color: #1b1d22;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.12), 0 -1px 0 rgba(0, 0, 0, 0.8);
-  font-weight: 700;
-}
-
-/* Raised / Embossed text cast out of plastic */
-.skeuo-text-embossed {
-  color: #f8fafc;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 -1px 0 rgba(255, 255, 255, 0.2);
-}
-
-/* --------------------------------------------------------------------------
-   10. PHYSICAL ROTARY KNOB / DIAL
+   9. ROTARY POTENTIOMETER DIAL
    -------------------------------------------------------------------------- */
 .skeuo-knob {
-  width: 68px;
-  height: 68px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: conic-gradient(
     #4a515e 0deg,
@@ -412,18 +497,32 @@ body {
     inset 0 1px 1px rgba(255, 255, 255, 0.5),
     inset 0 -1px 2px rgba(0, 0, 0, 0.8);
   position: relative;
-  cursor: grab;
+  cursor: ns-resize;
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 
 .skeuo-knob-notch {
   width: 4px;
-  height: 14px;
+  height: 16px;
   background: #f8fafc;
   border-radius: 2px;
   position: absolute;
   top: 6px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Grid Layout Utility */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
 }
