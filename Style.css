@@ -1,0 +1,429 @@
+/* ==========================================================================
+   SKEUOMORPHISM UI DESIGN SYSTEM (style.css)
+   A comprehensive, production-ready CSS framework for tactile, physical web UIs.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. GLOBAL DESIGN TOKENS & VARIABLES
+   -------------------------------------------------------------------------- */
+:root {
+  /* Palette: Slate & Physical Hardware */
+  --bg-desk: #212429;
+  --panel-top: #3c414b;
+  --panel-bottom: #2b2e36;
+  --panel-border: #1a1c21;
+
+  --chassis-top: #484e59;
+  --chassis-mid: #343942;
+  --chassis-bottom: #282b32;
+
+  --screen-bg: #101216;
+  --screen-border: #090a0c;
+
+  /* Accent & Lighting */
+  --accent-amber: #f59e0b;
+  --accent-amber-glow: rgba(245, 158, 11, 0.45);
+  --accent-green: #10b981;
+  --accent-green-glow: rgba(16, 185, 129, 0.45);
+  --accent-blue: #3b82f6;
+  --accent-blue-glow: rgba(59, 130, 246, 0.45);
+  --accent-red: #ef4444;
+  --accent-red-glow: rgba(239, 68, 68, 0.45);
+
+  /* Typography Colors */
+  --text-primary: #edf2f7;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-etched: rgba(255, 255, 255, 0.15);
+
+  /* Skeuomorphic Lighting Physics (Directional: 90° Overhead Light) */
+  --specular-top-sharp: inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  --specular-top-soft: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  --bevel-bottom-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+  --lip-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  /* Depth Shadows (Ambient + Occlusion) */
+  --shadow-raised-sm: 
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.35);
+
+  --shadow-raised-md: 
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    0 4px 8px -1px rgba(0, 0, 0, 0.45),
+    0 12px 24px -4px rgba(0, 0, 0, 0.55);
+
+  --shadow-sunken-well: 
+    inset 0 3px 6px rgba(0, 0, 0, 0.75),
+    inset 0 1px 2px rgba(0, 0, 0, 0.9),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+
+  --shadow-sunken-shallow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* Motion */
+  --tactile-spring: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE & DESK SURFACE
+   -------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-desk);
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, #353a43 0%, transparent 75%),
+    radial-gradient(circle at 50% 100%, #16181c 0%, transparent 80%),
+    linear-gradient(45deg, rgba(0,0,0,0.04) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0,0,0,0.04) 25%, transparent 25%);
+  background-size: 100% 100%, 100% 100%, 4px 4px, 4px 4px;
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------------------
+   3. SKEUOMORPHIC PANELS & CHASSIS
+   -------------------------------------------------------------------------- */
+.skeuo-panel {
+  background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  box-shadow: 
+    var(--specular-top-sharp),
+    var(--bevel-bottom-shadow),
+    var(--shadow-raised-md);
+  padding: 28px;
+  position: relative;
+}
+
+.skeuo-chassis {
+  background: linear-gradient(180deg, var(--chassis-top) 0%, var(--chassis-mid) 40%, var(--chassis-bottom) 100%);
+  border: 1px solid #1a1c20;
+  border-radius: 16px;
+  box-shadow: 
+    var(--specular-top-sharp),
+    var(--bevel-bottom-shadow),
+    0 10px 30px rgba(0, 0, 0, 0.65),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+  padding: 32px;
+}
+
+/* Screw Accents for Industrial Feel */
+.skeuo-screw {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #717784 0%, #3e424b 100%);
+  border-radius: 50%;
+  border: 1px solid #1f2227;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.6);
+  position: relative;
+  display: inline-block;
+}
+
+.skeuo-screw::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  right: 20%;
+  height: 1.5px;
+  background: #191b1f;
+  transform: translateY(-50%) rotate(42deg);
+}
+
+/* --------------------------------------------------------------------------
+   4. INSET WELLS, DISPLAYS & TERMINALS
+   -------------------------------------------------------------------------- */
+.skeuo-well {
+  background: var(--screen-bg);
+  border: 1px solid var(--screen-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sunken-well);
+  padding: 16px 20px;
+}
+
+.skeuo-display-screen {
+  background: linear-gradient(180deg, #0e1217 0%, #131922 100%);
+  border: 1px solid #05070a;
+  border-radius: 6px;
+  box-shadow: 
+    inset 0 4px 8px rgba(0, 0, 0, 0.9),
+    inset 0 1px 2px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+  font-family: "SF Mono", Monaco, Consolas, "Courier New", monospace;
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+  padding: 16px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle CRT Scanline overlay */
+.skeuo-display-screen::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   5. TACTILE PUSH BUTTONS
+   -------------------------------------------------------------------------- */
+.skeuo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 0.925rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #f1f5f9;
+  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.8);
+  background: linear-gradient(180deg, #535967 0%, #3c414c 50%, #2e323b 100%);
+  border: 1px solid #1c1e23;
+  border-radius: 6px;
+  box-shadow: 
+    var(--specular-top-sharp),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    var(--shadow-raised-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.06s ease, box-shadow 0.06s ease, background 0.06s ease;
+  text-decoration: none;
+}
+
+.skeuo-btn:hover {
+  background: linear-gradient(180deg, #5c6373 0%, #444a56 50%, #343842 100%);
+  color: #ffffff;
+}
+
+/* Depressed tactile physical state */
+.skeuo-btn:active,
+.skeuo-btn.is-active {
+  transform: translateY(2px);
+  background: linear-gradient(180deg, #24272e 0%, #2f343d 100%);
+  box-shadow: 
+    inset 0 3px 5px rgba(0, 0, 0, 0.7),
+    inset 0 1px 2px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Accent Buttons */
+.skeuo-btn-primary {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+  border-color: #172554;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 4px 10px rgba(37, 99, 235, 0.35),
+    var(--shadow-raised-sm);
+}
+.skeuo-btn-primary:hover {
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+}
+.skeuo-btn-primary:active {
+  background: linear-gradient(180deg, #172554 0%, #1e3a8a 100%);
+}
+
+.skeuo-btn-gold {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+  border-color: #78350f;
+  color: #fffbeb;
+  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 4px 10px rgba(217, 119, 6, 0.3),
+    var(--shadow-raised-sm);
+}
+
+/* --------------------------------------------------------------------------
+   6. PHYSICAL INPUT FIELDS
+   -------------------------------------------------------------------------- */
+.skeuo-input {
+  width: 100%;
+  background: #191c22;
+  border: 1px solid #101216;
+  border-radius: 6px;
+  box-shadow: var(--shadow-sunken-well);
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.skeuo-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 
+    var(--shadow-sunken-well),
+    0 0 0 1px rgba(59, 130, 246, 0.5),
+    0 0 12px rgba(59, 130, 246, 0.25);
+}
+
+.skeuo-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   7. ROCKER & TOGGLE SWITCHES
+   -------------------------------------------------------------------------- */
+.skeuo-toggle {
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.skeuo-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.skeuo-toggle-track {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #17191d;
+  border-radius: 16px;
+  border: 1px solid #0f1013;
+  box-shadow: var(--shadow-sunken-well);
+  transition: all 0.2s var(--tactile-spring);
+}
+
+.skeuo-toggle-knob {
+  position: absolute;
+  content: "";
+  height: 24px;
+  width: 24px;
+  left: 4px;
+  bottom: 3px;
+  background: linear-gradient(180deg, #f1f5f9 0%, #94a3b8 100%);
+  border-radius: 50%;
+  border: 1px solid #475569;
+  box-shadow: 
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s var(--tactile-spring);
+}
+
+.skeuo-toggle input:checked + .skeuo-toggle-track {
+  background: #1a2333;
+}
+
+.skeuo-toggle input:checked + .skeuo-toggle-track .skeuo-toggle-knob {
+  transform: translateX(32px);
+  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+  border-color: #1d4ed8;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 0 10px var(--accent-blue-glow),
+    0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   8. LED INDICATOR LAMPS
+   -------------------------------------------------------------------------- */
+.skeuo-led {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #2b313a;
+  border: 1px solid #15181c;
+  box-shadow: 
+    inset 0 1px 1px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  position: relative;
+}
+
+.skeuo-led.is-active-green {
+  background: radial-gradient(circle at 35% 35%, #86efac 0%, #22c55e 60%, #15803d 100%);
+  border-color: #14532d;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    0 0 8px var(--accent-green-glow),
+    0 0 14px var(--accent-green-glow);
+}
+
+.skeuo-led.is-active-amber {
+  background: radial-gradient(circle at 35% 35%, #fde68a 0%, #f59e0b 60%, #b45309 100%);
+  border-color: #78350f;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    0 0 8px var(--accent-amber-glow),
+    0 0 14px var(--accent-amber-glow);
+}
+
+/* --------------------------------------------------------------------------
+   9. PHYSICAL EMBOSSED & ENGRAVED TYPOGRAPHY
+   -------------------------------------------------------------------------- */
+/* Sunken / Debossed text stamped into metal */
+.skeuo-text-engraved {
+  color: #1b1d22;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.12), 0 -1px 0 rgba(0, 0, 0, 0.8);
+  font-weight: 700;
+}
+
+/* Raised / Embossed text cast out of plastic */
+.skeuo-text-embossed {
+  color: #f8fafc;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 -1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   10. PHYSICAL ROTARY KNOB / DIAL
+   -------------------------------------------------------------------------- */
+.skeuo-knob {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #4a515e 0deg,
+    #2c3038 90deg,
+    #58606f 180deg,
+    #2c3038 270deg,
+    #4a515e 360deg
+  );
+  border: 2px solid #1a1c21;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.8);
+  position: relative;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skeuo-knob-notch {
+  width: 4px;
+  height: 14px;
+  background: #f8fafc;
+  border-radius: 2px;
+  position: absolute;
+  top: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
