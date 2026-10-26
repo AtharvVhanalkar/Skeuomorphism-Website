@@ -4,7 +4,489 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Skeuomorphism Studio & Control Unit</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ==========================================================================
+       1. GLOBAL DESIGN TOKENS & VARIABLES
+       ========================================================================== */
+    :root {
+      /* Palette: Slate & Physical Hardware */
+      --bg-desk: #1e2126;
+      --panel-top: #3c414b;
+      --panel-bottom: #2b2e36;
+      --panel-border: #1a1c21;
+
+      --chassis-top: #484e59;
+      --chassis-mid: #343942;
+      --chassis-bottom: #282b32;
+
+      --screen-bg: #101216;
+      --screen-border: #090a0c;
+
+      /* Accent & Lighting */
+      --accent-amber: #f59e0b;
+      --accent-amber-glow: rgba(245, 158, 11, 0.45);
+      --accent-green: #10b981;
+      --accent-green-glow: rgba(16, 185, 129, 0.45);
+      --accent-blue: #3b82f6;
+      --accent-blue-glow: rgba(59, 130, 246, 0.45);
+      --accent-red: #ef4444;
+      --accent-red-glow: rgba(239, 68, 68, 0.45);
+
+      /* Typography Colors */
+      --text-primary: #edf2f7;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+
+      /* Skeuomorphic Lighting Physics (Directional: 90° Overhead Light) */
+      --specular-top-sharp: inset 0 1px 0 rgba(255, 255, 255, 0.38);
+      --specular-top-soft: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      --bevel-bottom-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+      --lip-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+
+      /* Depth Shadows (Ambient + Occlusion) */
+      --shadow-raised-sm: 
+        0 1px 2px rgba(0, 0, 0, 0.5),
+        0 3px 6px rgba(0, 0, 0, 0.35);
+
+      --shadow-raised-md: 
+        0 1px 3px rgba(0, 0, 0, 0.6),
+        0 4px 8px -1px rgba(0, 0, 0, 0.45),
+        0 12px 24px -4px rgba(0, 0, 0, 0.55);
+
+      --shadow-sunken-well: 
+        inset 0 3px 6px rgba(0, 0, 0, 0.75),
+        inset 0 1px 2px rgba(0, 0, 0, 0.9),
+        0 1px 0 rgba(255, 255, 255, 0.08);
+
+      --shadow-sunken-shallow: 
+        inset 0 1px 3px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(0, 0, 0, 0.8),
+        0 1px 0 rgba(255, 255, 255, 0.06);
+
+      --tactile-spring: cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* ==========================================================================
+       2. BASE & DESK SURFACE
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-desk);
+      background-image: 
+        radial-gradient(ellipse at 50% 0%, #353a43 0%, transparent 75%),
+        radial-gradient(circle at 50% 100%, #14161a 0%, transparent 80%),
+        linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(0,0,0,0.05) 25%, transparent 25%);
+      background-size: 100% 100%, 100% 100%, 4px 4px, 4px 4px;
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+      padding: 30px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    /* ==========================================================================
+       3. NAVIGATION BAR (RACK MOUNT STYLE)
+       ========================================================================== */
+    .skeuo-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, #373b44 0%, #252830 100%);
+      border: 1px solid #16181c;
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      box-shadow: 
+        var(--specular-top-sharp),
+        var(--bevel-bottom-shadow),
+        var(--shadow-raised-sm);
+    }
+
+    .nav-brand {
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 1.05rem;
+      color: #f8fafc;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       4. SKEUOMORPHIC PANELS & CHASSIS
+       ========================================================================== */
+    .skeuo-panel {
+      background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      box-shadow: 
+        var(--specular-top-sharp),
+        var(--bevel-bottom-shadow),
+        var(--shadow-raised-md);
+      padding: 28px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .chassis-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1a1c21;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Industrial Corner Screws */
+    .skeuo-screw {
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, #717784 0%, #3e424b 100%);
+      border-radius: 50%;
+      border: 1px solid #1f2227;
+      box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.5),
+        0 1px 2px rgba(0, 0, 0, 0.6);
+      position: relative;
+      display: inline-block;
+    }
+
+    .skeuo-screw::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 20%;
+      right: 20%;
+      height: 1.5px;
+      background: #191b1f;
+      transform: translateY(-50%) rotate(42deg);
+    }
+
+    /* ==========================================================================
+       5. INSET WELLS, TERMINALS & VU METER
+       ========================================================================== */
+    .skeuo-well {
+      background: var(--screen-bg);
+      border: 1px solid var(--screen-border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sunken-well);
+      padding: 16px 20px;
+    }
+
+    .skeuo-display-screen {
+      background: linear-gradient(180deg, #0e1217 0%, #131922 100%);
+      border: 1px solid #05070a;
+      border-radius: 6px;
+      box-shadow: 
+        inset 0 4px 8px rgba(0, 0, 0, 0.9),
+        inset 0 1px 2px rgba(0, 0, 0, 0.8),
+        0 1px 0 rgba(255, 255, 255, 0.08);
+      font-family: "SF Mono", Monaco, Consolas, monospace;
+      color: #38bdf8;
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      height: 140px;
+      overflow-y: auto;
+    }
+
+    .skeuo-display-screen::before {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Analog VU Meter */
+    .vu-meter-casing {
+      width: 100%;
+      height: 120px;
+      background: #f4ecd8;
+      border: 2px solid #202227;
+      border-radius: 8px;
+      box-shadow: 
+        inset 0 3px 8px rgba(0,0,0,0.6),
+        inset 0 0 16px rgba(180, 160, 120, 0.4),
+        0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vu-scale {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #332d25;
+      font-family: monospace;
+    }
+
+    .vu-needle {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      width: 2px;
+      height: 130px;
+      background: #dc2626;
+      transform-origin: bottom center;
+      transform: rotate(-35deg);
+      transition: transform 0.1s linear;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    .vu-pivot {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 24px;
+      background: #2b2e36;
+      border-radius: 50%;
+      border: 2px solid #14161a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    /* ==========================================================================
+       6. TACTILE PUSH BUTTONS
+       ========================================================================== */
+    .skeuo-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-size: 0.925rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: #f1f5f9;
+      text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.8);
+      background: linear-gradient(180deg, #535967 0%, #3c414c 50%, #2e323b 100%);
+      border: 1px solid #1c1e23;
+      border-radius: 6px;
+      box-shadow: 
+        var(--specular-top-sharp),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+        var(--shadow-raised-sm);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.06s ease, box-shadow 0.06s ease, background 0.06s ease;
+      text-decoration: none;
+    }
+
+    .skeuo-btn:hover {
+      background: linear-gradient(180deg, #5c6373 0%, #444a56 50%, #343842 100%);
+      color: #ffffff;
+    }
+
+    .skeuo-btn:active {
+      transform: translateY(2px);
+      background: linear-gradient(180deg, #24272e 0%, #2f343d 100%);
+      box-shadow: 
+        inset 0 3px 5px rgba(0, 0, 0, 0.7),
+        inset 0 1px 2px rgba(0, 0, 0, 0.8),
+        0 1px 0 rgba(255, 255, 255, 0.1);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    }
+
+    .skeuo-btn-primary {
+      background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+      border-color: #172554;
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+        0 4px 10px rgba(37, 99, 235, 0.35),
+        var(--shadow-raised-sm);
+    }
+
+    .skeuo-btn-gold {
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+      border-color: #78350f;
+      color: #fffbeb;
+      text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+        0 4px 10px rgba(217, 119, 6, 0.3),
+        var(--shadow-raised-sm);
+    }
+
+    /* ==========================================================================
+       7. INPUTS & FORM CONTROLS
+       ========================================================================== */
+    .skeuo-input {
+      width: 100%;
+      background: #191c22;
+      border: 1px solid #101216;
+      border-radius: 6px;
+      box-shadow: var(--shadow-sunken-well);
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .skeuo-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 
+        var(--shadow-sunken-well),
+        0 0 0 1px rgba(59, 130, 246, 0.5),
+        0 0 12px rgba(59, 130, 246, 0.25);
+    }
+
+    /* ==========================================================================
+       8. TOGGLE SWITCH & LED
+       ========================================================================== */
+    .skeuo-toggle {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+      cursor: pointer;
+    }
+
+    .skeuo-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .skeuo-toggle-track {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #17191d;
+      border-radius: 15px;
+      border: 1px solid #0f1013;
+      box-shadow: var(--shadow-sunken-well);
+      transition: all 0.2s var(--tactile-spring);
+    }
+
+    .skeuo-toggle-knob {
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 3px;
+      background: linear-gradient(180deg, #f1f5f9 0%, #94a3b8 100%);
+      border-radius: 50%;
+      border: 1px solid #475569;
+      box-shadow: 
+        inset 0 1px 0 #ffffff,
+        inset 0 -1px 1px rgba(0, 0, 0, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.6);
+      transition: all 0.2s var(--tactile-spring);
+    }
+
+    .skeuo-toggle input:checked + .skeuo-toggle-track {
+      background: #172433;
+    }
+
+    .skeuo-toggle input:checked + .skeuo-toggle-track .skeuo-toggle-knob {
+      transform: translateX(30px);
+      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+      border-color: #1d4ed8;
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        0 0 10px var(--accent-blue-glow),
+        0 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .skeuo-led {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #2b313a;
+      border: 1px solid #15181c;
+      box-shadow: 
+        inset 0 1px 1px rgba(0, 0, 0, 0.8),
+        0 1px 0 rgba(255, 255, 255, 0.1);
+      display: inline-block;
+    }
+
+    .skeuo-led.is-active-green {
+      background: radial-gradient(circle at 35% 35%, #86efac 0%, #22c55e 60%, #15803d 100%);
+      border-color: #14532d;
+      box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.8),
+        0 0 8px var(--accent-green-glow),
+        0 0 14px var(--accent-green-glow);
+    }
+
+    /* ==========================================================================
+       9. ROTARY POTENTIOMETER DIAL & GRIDS
+       ========================================================================== */
+    .skeuo-knob {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #4a515e 0deg,
+        #2c3038 90deg,
+        #58606f 180deg,
+        #2c3038 270deg,
+        #4a515e 360deg
+      );
+      border: 2px solid #1a1c21;
+      box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.5),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.8);
+      position: relative;
+      cursor: ns-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .skeuo-knob-notch {
+      width: 4px;
+      height: 16px;
+      background: #f8fafc;
+      border-radius: 2px;
+      position: absolute;
+      top: 6px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -189,6 +671,167 @@
 
   </div>
 
-  <script src="script.js"></script>
+  <!-- JAVASCRIPT LOGIC & AUDIO SYNTHESIS -->
+  <script>
+    class TactileAudioEngine {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playClick(type = 'push') {
+        try {
+          this.init();
+          if (!this.ctx) return;
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const now = this.ctx.currentTime;
+
+          if (type === 'push') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(140, now);
+            osc.frequency.exponentialRampToValueAtTime(35, now + 0.04);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+          } else if (type === 'release') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(320, now);
+            osc.frequency.exponentialRampToValueAtTime(90, now + 0.025);
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+          } else if (type === 'tick') {
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(800, now);
+            osc.frequency.exponentialRampToValueAtTime(120, now + 0.015);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
+          }
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + (type === 'push' ? 0.04 : 0.025));
+        } catch (e) {}
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const audio = new TactileAudioEngine();
+
+      // Tactile button mechanical sound listeners
+      document.querySelectorAll('.skeuo-btn').forEach(btn => {
+        btn.addEventListener('mousedown', () => audio.playClick('push'));
+        btn.addEventListener('mouseup', () => audio.playClick('release'));
+      });
+
+      // Rocker switch toggle handler
+      document.querySelectorAll('.skeuo-toggle input[type="checkbox"]').forEach(toggle => {
+        toggle.addEventListener('change', (e) => {
+          audio.playClick('tick');
+          const channel = e.target.dataset.channel || 'SYSTEM';
+          const status = e.target.checked ? 'ENGAGED' : 'DISENGAGED';
+          logTerminal(`[${channel}] Switch altered -> ${status}`);
+
+          const targetLed = document.getElementById(e.target.dataset.ledTarget);
+          if (targetLed) {
+            targetLed.classList.toggle('is-active-green', e.target.checked);
+          }
+        });
+      });
+
+      // Rotary Knob Drag Interaction
+      document.querySelectorAll('.skeuo-knob').forEach(knob => {
+        let isDragging = false;
+        let startY = 0;
+        let currentAngle = parseInt(knob.dataset.angle || '0', 10);
+
+        const updateKnob = (angle) => {
+          currentAngle = Math.max(-135, Math.min(135, angle));
+          knob.style.transform = `rotate(${currentAngle}deg)`;
+          knob.dataset.angle = currentAngle;
+          
+          const readout = document.getElementById(knob.dataset.readout);
+          if (readout) {
+            const percent = Math.round(((currentAngle + 135) / 270) * 100);
+            readout.textContent = `${percent}%`;
+          }
+        };
+
+        knob.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          startY = e.clientY;
+          audio.init();
+          document.body.style.cursor = 'ns-resize';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const deltaY = startY - e.clientY;
+          startY = e.clientY;
+          const newAngle = currentAngle + deltaY * 2.2;
+          if (Math.abs(newAngle - currentAngle) > 8) audio.playClick('tick');
+          updateKnob(newAngle);
+        });
+
+        window.addEventListener('mouseup', () => {
+          if (isDragging) {
+            isDragging = false;
+            document.body.style.cursor = 'default';
+            logTerminal(`[POTENTIOMETER] Adjusted to angle ${currentAngle.toFixed(0)}°`);
+          }
+        });
+      });
+
+      // Analog VU meter ballistics loop
+      const meterNeedle = document.getElementById('vuNeedle');
+      if (meterNeedle) {
+        let baseAngle = -35;
+        setInterval(() => {
+          const target = Math.max(-45, Math.min(45, baseAngle + (Math.random() - 0.48) * 16));
+          meterNeedle.style.transform = `rotate(${target}deg)`;
+        }, 120);
+      }
+
+      // Interactive Action Buttons
+      const executeBtn = document.getElementById('btnExecute');
+      if (executeBtn) {
+        executeBtn.addEventListener('click', () => logTerminal('[PROCESS] Executing sequence diagnostics... OK.'));
+      }
+
+      const resetBtn = document.getElementById('btnReset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          logTerminal('[SYSTEM] Calibration parameters reset to factory defaults.');
+          const knob = document.querySelector('.skeuo-knob');
+          if (knob) {
+            knob.style.transform = 'rotate(0deg)';
+            knob.dataset.angle = 0;
+            const readout = document.getElementById(knob.dataset.readout);
+            if (readout) readout.textContent = '50%';
+          }
+        });
+      }
+    });
+
+    function logTerminal(message) {
+      const terminal = document.getElementById('terminalOutput');
+      if (!terminal) return;
+      const line = document.createElement('div');
+      line.style.marginTop = '4px';
+      line.textContent = `[${new Date().toTimeString().split(' ')[0]}] ${message}`;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+  </script>
 </body>
 </html>
